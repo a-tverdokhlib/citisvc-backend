@@ -77,6 +77,7 @@ app.use(cors());
 app.options('*', cors());
 
 // public
+// app.use('/web', express.static('public'));
 app.use('/web', express.static('public'));
 
 // jwt authentication
@@ -91,6 +92,11 @@ if (config.env === 'production') {
 // v1 api routes
 app.use('/v1', routes);
 
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
     next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
@@ -101,5 +107,6 @@ app.use(errorConverter);
 
 // handle error
 app.use(errorHandler);
+
 
 export default app;
